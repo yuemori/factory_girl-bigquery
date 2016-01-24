@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+See [spec](https://github.com/yuemori/factory_girl-bigquery/blob/master/spec/factory_girl/bigquery_spec.rb).
 
 ## Development
 
