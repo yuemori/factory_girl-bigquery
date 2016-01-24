@@ -103,7 +103,7 @@ module FactoryGirl
 
             protected
 
-            def cast
+            def cast_value
               "TIMESTAMP(\"#{value.to_s(:db)}\")"
             end
           end
