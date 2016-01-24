@@ -46,7 +46,7 @@ module FactoryGirl
           end
 
           def to_s
-            self.name.split('::').last.to_s.upcase
+            name.split('::').last.to_s.upcase
           end
         end
       end
