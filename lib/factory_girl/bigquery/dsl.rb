@@ -21,12 +21,28 @@ module FactoryGirl
           @options = options
         end
 
+        def to_sql
+          attributes.values.map(&:to_sql).join(', ')
+        end
+
         def define_attribute_for(table_attributes)
           table_attributes.each do |attribute|
             self.class.send(:define_method, attribute[:name]) do |value|
-              attribute[:type].validate!(value)
-              attributes[:name] = value
+              attributes[attribute[:name]] = Attribute.new(attribute[:name], attribute[:type].new(value))
             end
+          end
+        end
+
+        class Attribute
+          attr_reader :name, :type
+
+          def initialize(name, type)
+            @name = name
+            @type = type
+          end
+
+          def to_sql
+            "#{type.cast} AS #{name}"
           end
         end
 

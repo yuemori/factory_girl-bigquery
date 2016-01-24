@@ -7,6 +7,7 @@ module FactoryGirl
   module Bigquery
     class << self
       class UndefinedTableError < StandardError; end
+      class UndefinedFactoryError < StandardError; end
 
       def configure
         @configuration = Configuration.new
@@ -33,6 +34,11 @@ module FactoryGirl
 
       def register_factory(factory)
         factories[factory.name] = factory
+      end
+
+      def to_sql(name)
+        raise UndefinedFactoryError.new, "#{name} factory is undefined" unless factories.key? name
+        "SELECT * FROM (SELECT #{factories[name].to_sql})"
       end
 
       private

@@ -22,41 +22,90 @@ module FactoryGirl
           class MismatchAttributeError < StandardError; end
 
           class Base
-            def self.valid?(value)
-              if @definition_class.is_a? Array
-                @definition_class.any? { |c| value.is_a? c }
-              else
-                value.is_a? @definition_class
-              end
+            attr_reader :value
+
+            def initialize(value)
+              raise MismatchAttributeError.new, "#{value} mismatch to #{type}" unless valid?(value)
+              @value = value
             end
 
-            def self.validate!(value)
-              raise MismatchAttributeError.new, "#{value} mismatch to #{@definition_class}" unless valid?(value)
+            def type
+              self.class.type
+            end
+
+            def valid?(value)
+              self.class.valid?(value)
+            end
+
+            def cast
+              "CAST(NULL AS #{self.class.name.split('::').last})" if value.nil?
+              cast_value
+            end
+
+            protected
+
+            def cast_value
+              value.to_s
+            end
+
+            class << self
+              attr_reader :type
+
+              def valid?(value)
+                if @type.is_a? Array
+                  @type.any? { |c| value.is_a? c }
+                else
+                  value.is_a? @type
+                end
+              end
+
+              def data_type(type)
+                @type = type
+              end
             end
           end
 
           class Integer < Base
-            @definition_class = ::Numeric
+            data_type ::Numeric
           end
 
           class String < Base
-            @definition_class = ::String
+            data_type ::String
+
+            protected
+
+            def cast_value
+              string = value.gsub(/"/, '\"')
+              %("#{string}")
+            end
           end
 
           class Float < Base
-            @definition_class = ::Numeric
+            data_type ::Numeric
           end
 
           class Record < Base
-            @definition_class = ::Hash
+            data_type ::Hash
+
+            protected
+
+            def cast_value
+              raise NotImplementedError.new, 'sorry, this feature is not implemented'
+            end
           end
 
           class Timestamp < Base
-            @definition_class = [::Time, ::Date]
+            data_type [::Time, ::Date]
+
+            protected
+
+            def cast
+              "TIMESTAMP(\"#{value.to_s(:db)}\")"
+            end
           end
 
           class Boolean < Base
-            @definition_class = [::FalseClass, ::TrueClass]
+            data_type [::FalseClass, ::TrueClass]
           end
         end
 
