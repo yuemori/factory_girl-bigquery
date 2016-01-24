@@ -22,7 +22,7 @@ module FactoryGirl
         end
 
         def to_sql
-          select_clause = attributes.values.map(&:to_sql).join(', ')
+          select_clause = attributes.values.map(&:to_sql).join(',')
           "SELECT * FROM (SELECT #{select_clause})"
         end
 
