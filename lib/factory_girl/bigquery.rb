@@ -5,6 +5,8 @@ require "factory_girl/bigquery/schema"
 require "factory_girl/bigquery/table"
 require "factory_girl/bigquery/type"
 require "factory_girl/bigquery/dsl"
+require "factory_girl/bigquery/factory"
+require "factory_girl/bigquery/attribute"
 require "factory_girl/bigquery/version"
 
 module FactoryGirl
