@@ -2,6 +2,8 @@ require "active_support"
 require "active_support/core_ext"
 require "factory_girl/bigquery/configuration"
 require "factory_girl/bigquery/schema"
+require "factory_girl/bigquery/table"
+require "factory_girl/bigquery/type"
 require "factory_girl/bigquery/dsl"
 require "factory_girl/bigquery/version"
 
