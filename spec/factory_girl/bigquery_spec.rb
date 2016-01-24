@@ -2,10 +2,6 @@ require 'spec_helper'
 
 describe FactoryGirl::Bigquery do
   before do
-    FactoryGirl::Bigquery.configure do |config|
-      config.dataset = 'test'
-    end
-
     FactoryGirl::Bigquery::Schema.define do
       table :user do |t|
         t.string    'first_name'
