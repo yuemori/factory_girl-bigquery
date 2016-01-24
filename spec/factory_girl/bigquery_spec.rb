@@ -13,6 +13,14 @@ describe FactoryGirl::Bigquery do
         t.boolean 'admin',      null: false
       end
     end
+
+    FactoryGirl::Bigquery.define do
+      factory :user do
+        first_name "John"
+        last_name "Doe"
+        admin false
+      end
+    end
   end
 
   describe 'test' do

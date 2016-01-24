@@ -19,22 +19,44 @@ module FactoryGirl
 
       class Table
         module Type
-          class Integer
+          class MismatchAttributeError < StandardError; end
+
+          class Base
+            def self.valid?(value)
+              if @definition_class.is_a? Array
+                @definition_class.any? { |c| value.is_a? c }
+              else
+                value.is_a? @definition_class
+              end
+            end
+
+            def self.validate!(value)
+              raise MismatchAttributeError.new, "#{value} mismatch to #{@definition_class}" unless valid?(value)
+            end
           end
 
-          class String
+          class Integer < Base
+            @definition_class = ::Numeric
           end
 
-          class Float
+          class String < Base
+            @definition_class = ::String
           end
 
-          class Record
+          class Float < Base
+            @definition_class = ::Numeric
           end
 
-          class Timestamp
+          class Record < Base
+            @definition_class = ::Hash
           end
 
-          class Boolean
+          class Timestamp < Base
+            @definition_class = [::Time, ::Date]
+          end
+
+          class Boolean < Base
+            @definition_class = [::FalseClass, ::TrueClass]
           end
         end
 
@@ -42,6 +64,10 @@ module FactoryGirl
 
         def initialize(name)
           @name = name
+        end
+
+        def attributes
+          @columns
         end
 
         def string(column_name, options = {})
