@@ -1,4 +1,5 @@
 require "factory_girl/bigquery/configuration"
+require "factory_girl/bigquery/schema"
 require "factory_girl/bigquery/version"
 
 module FactoryGirl
@@ -12,6 +13,16 @@ module FactoryGirl
 
       def configuration
         @configuration || configure
+      end
+
+      def register_table(table)
+        tables[table.name] = table
+      end
+
+      private
+
+      def tables
+        @tables ||= {}
       end
     end
   end
