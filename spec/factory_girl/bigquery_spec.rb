@@ -28,7 +28,7 @@ describe FactoryGirl::Bigquery do
   end
 
   describe '#to_sql' do
-    subject { FactoryGirl::Bigquery.to_sql(:user) }
+    subject { FactoryGirl::Bigquery.build(:user).to_sql }
     let(:expect_sql) { 'SELECT * FROM (SELECT "John" AS first_name, "Doe" AS last_name, false AS admin, 26 AS age, 167.2 AS height)' }
     it { is_expected.to eq expect_sql }
   end

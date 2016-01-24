@@ -36,9 +36,9 @@ module FactoryGirl
         factories[factory.name.to_sym] = factory
       end
 
-      def to_sql(name)
+      def build(name)
         raise UndefinedFactoryError.new, "#{name} factory is undefined" unless factories.key? name
-        "SELECT * FROM (SELECT #{factories[name.to_sym].to_sql})"
+        factories[name.to_sym]
       end
 
       def table(name)
