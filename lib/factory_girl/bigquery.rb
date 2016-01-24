@@ -29,16 +29,21 @@ module FactoryGirl
 
       def table_definition(name)
         raise UndefinedTableError.new, "#{name} table is undefined" unless tables.key? name
-        tables[name].attributes
+        tables[name.to_sym].attributes
       end
 
       def register_factory(factory)
-        factories[factory.name] = factory
+        factories[factory.name.to_sym] = factory
       end
 
       def to_sql(name)
         raise UndefinedFactoryError.new, "#{name} factory is undefined" unless factories.key? name
-        "SELECT * FROM (SELECT #{factories[name].to_sql})"
+        "SELECT * FROM (SELECT #{factories[name.to_sym].to_sql})"
+      end
+
+      def table(name)
+        raise UndefinedTableError.new, "#{name} table is undefined" unless tables.key? name
+        tables[name.to_sym]
       end
 
       private

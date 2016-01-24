@@ -25,11 +25,11 @@ module FactoryGirl
             attr_reader :value
 
             def initialize(value)
-              raise MismatchAttributeError.new, "#{value} mismatch to #{type}" unless valid?(value)
+              raise MismatchAttributeError.new, "#{value} mismatch to #{data_type}" unless valid?(value)
               @value = value
             end
 
-            def type
+            def data_type
               self.class.type
             end
 
@@ -59,18 +59,22 @@ module FactoryGirl
                 end
               end
 
-              def data_type(type)
+              def cast_type(type)
                 @type = type
+              end
+
+              def to_s
+                self.name.split('::').last.to_s.upcase
               end
             end
           end
 
           class Integer < Base
-            data_type ::Numeric
+            cast_type ::Numeric
           end
 
           class String < Base
-            data_type ::String
+            cast_type ::String
 
             protected
 
@@ -81,11 +85,11 @@ module FactoryGirl
           end
 
           class Float < Base
-            data_type ::Numeric
+            cast_type ::Numeric
           end
 
           class Record < Base
-            data_type ::Hash
+            cast_type ::Hash
 
             protected
 
@@ -95,7 +99,7 @@ module FactoryGirl
           end
 
           class Timestamp < Base
-            data_type [::Time, ::Date]
+            cast_type [::Time, ::Date]
 
             protected
 
@@ -105,7 +109,7 @@ module FactoryGirl
           end
 
           class Boolean < Base
-            data_type [::FalseClass, ::TrueClass]
+            cast_type [::FalseClass, ::TrueClass]
           end
         end
 
@@ -141,6 +145,10 @@ module FactoryGirl
 
         def timestamp(column_name, options = {})
           columns << { name: column_name, type: Type::Timestamp, options: options }
+        end
+
+        def to_schema
+          @columns.each_with_object([]) { |column, arr| arr << { name: column[:name], type: column[:type].to_s } }
         end
 
         private

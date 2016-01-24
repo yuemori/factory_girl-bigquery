@@ -32,4 +32,15 @@ describe FactoryGirl::Bigquery do
     let(:expect_sql) { 'SELECT * FROM (SELECT "John" AS first_name, "Doe" AS last_name, false AS admin, 26 AS age, 167.2 AS height)' }
     it { is_expected.to eq expect_sql }
   end
+
+  describe '#to_schema' do
+    subject { FactoryGirl::Bigquery.table(:user).to_schema }
+    let(:first_name_column) { { name: "first_name", type: "STRING" } }
+    let(:last_name_column)  { { name: "last_name", type: "STRING" } }
+    let(:admin_column)      { { name: "admin", type: "BOOLEAN" } }
+    let(:age_column)        { { name: "age", type: "INTEGER" } }
+    let(:height_column)     { { name: "height", type: "FLOAT" } }
+    let(:schema)            { [first_name_column, last_name_column, admin_column, age_column, height_column] }
+    it { is_expected.to match_array schema }
+  end
 end
